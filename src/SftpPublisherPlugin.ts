@@ -1,3 +1,4 @@
+import fs from 'fs'
 import glob from 'glob'
 import path from 'path'
 import mkdirp from 'mkdirp'
@@ -24,10 +25,23 @@ export default class SftpPublisherPlugin implements PublisherPlugin<PluginConfig
 
   init(config: PluginCreateOptions<PluginConfig>) {
     this.option = config
-    this.pluginConfig = { ...config.options }
     this.logger = config.logger
     this.workingDirs = config.workingDirs
-    this.client = new SftpClient(config.options)
+
+    let privateKey
+    if (typeof process.env.SFTP_PRIVATE_KEY_PATH === 'string') {
+      privateKey = fs.readFileSync(process.env.SFTP_PRIVATE_KEY_PATH)
+    } else {
+      privateKey = process.env.SFTP_PRIVATE_KEY ?? config.options.privateKey
+    }
+
+    this.pluginConfig = {
+      ...config.options,
+      password: process.env.SFTP_PASSWORD ?? config.options.password,
+      privateKey,
+    }
+
+    this.client = new SftpClient(this.pluginConfig)
   }
 
   private resolveOnRemote(key: string): string {

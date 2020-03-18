@@ -2,8 +2,8 @@ import Client from 'ssh2-sftp-client'
 import { ConnectConfig } from 'ssh2'
 
 export default class SftpClient {
+  config: ConnectConfig
   private sftp: Client
-  private config: ConnectConfig
   private connected: boolean
 
   constructor(config: ConnectConfig) {
@@ -40,8 +40,10 @@ export default class SftpClient {
   }
 
   async end() {
-    await this.sftp.end()
-    this.sftp = new Client()
-    this.connected = false
+    if (this.connected) {
+      await this.sftp.end()
+      this.sftp = new Client()
+      this.connected = false
+    }
   }
 }
