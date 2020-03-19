@@ -1,4 +1,3 @@
-import fs from 'fs'
 import glob from 'glob'
 import path from 'path'
 import mkdirp from 'mkdirp'
@@ -10,6 +9,7 @@ import {
 } from 'reg-suit-interface'
 import { ConnectConfig } from 'ssh2'
 import SftpClient from './SftpClient'
+import fetchPrivateKey from './fetchPrivateKey'
 
 export interface PluginConfig extends ConnectConfig {
   reportUrlPrefix: string;
@@ -28,17 +28,10 @@ export default class SftpPublisherPlugin implements PublisherPlugin<PluginConfig
     this.logger = config.logger
     this.workingDirs = config.workingDirs
 
-    let privateKey
-    if (typeof process.env.SFTP_PRIVATE_KEY_PATH === 'string') {
-      privateKey = fs.readFileSync(process.env.SFTP_PRIVATE_KEY_PATH)
-    } else {
-      privateKey = process.env.SFTP_PRIVATE_KEY ?? config.options.privateKey
-    }
-
     this.pluginConfig = {
       ...config.options,
       password: process.env.SFTP_PASSWORD ?? config.options.password,
-      privateKey,
+      privateKey: fetchPrivateKey(config.options),
     }
 
     this.client = new SftpClient(this.pluginConfig)
@@ -81,10 +74,9 @@ export default class SftpPublisherPlugin implements PublisherPlugin<PluginConfig
 
     await this.client.createDirectory(this.resolveOnRemote(key))
     await this.client.uploadDirectory(this.workingDirs.base, this.resolveOnRemote(key))
+    await this.client.end()
     progress.increment(1)
     progress.stop()
-
-    await this.client.end()
 
     const list = await new Promise<string[]>((resolve, reject) => {
       glob('**/*.html', {

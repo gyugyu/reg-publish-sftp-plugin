@@ -5,6 +5,7 @@ services:
     image: atmoz/sftp
     volumes: 
       - './sftp-data:/home/foo/uploads'
+      - './docker/id_rsa.pub:/home/foo/.ssh/keys/id_rsa.pub:ro'
     ports: 
       - '2222:22'
     command: 'foo:pass:1001'
