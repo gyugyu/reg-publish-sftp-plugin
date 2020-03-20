@@ -24,6 +24,7 @@ jobs:
       - run: docker-compose up -d
       - run: npm install
       - run: npm run build
+      - run: npm run lint
       - run: npm test
         env:
           CI: true

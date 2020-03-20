@@ -18,6 +18,9 @@
     "@types/rimraf": "^2.0.3",
     "@types/ssh2-sftp-client": "^4.1.3",
     "@types/uuid": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^2.24.0",
+    "@typescript-eslint/parser": "^2.24.0",
+    "eslint": "^6.8.0",
     "jest": "^25.1.0",
     "reg-suit-interface": "^0.7.25",
     "reg-suit-util": "^0.8.5",
@@ -31,14 +34,22 @@
     "clean": "rm -rf ./lib",
     "compile": "tsc -p tsconfig.build.json",
     "test": "jest",
+    "lint": "eslint . --ext .ts",
     "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/gyugyu/reg-publish-sftp-plugin.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "reg",
+    "reg-suit-plugin",
+    "SFTP"
+  ],
+  "author": {
+    "name": "gyugyu (Yusuke Yagyu)",
+    "email": "gyugyu@pepabo.com"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/gyugyu/reg-publish-sftp-plugin/issues"

@@ -6,6 +6,7 @@ import {
   PublisherPlugin,
   PluginCreateOptions,
   PluginLogger,
+  PublishResult,
 } from 'reg-suit-interface'
 import { ConnectConfig } from 'ssh2'
 import SftpClient from './SftpClient'
@@ -23,7 +24,7 @@ export default class SftpPublisherPlugin implements PublisherPlugin<PluginConfig
   private workingDirs!: WorkingDirectoryInfo
   private client!: SftpClient
 
-  init(config: PluginCreateOptions<PluginConfig>) {
+  init(config: PluginCreateOptions<PluginConfig>): void {
     this.option = config
     this.logger = config.logger
     this.workingDirs = config.workingDirs
@@ -53,7 +54,7 @@ export default class SftpPublisherPlugin implements PublisherPlugin<PluginConfig
     return reportUrlPrefix
   }
 
-  async fetch(key: string) {
+  async fetch(key: string): Promise<void> {
     if (this.option.noEmit) return
     const actualPrefix = `${this.resolveOnRemote(key)}/${path.basename(this.workingDirs.actualDir)}`
     if (!await this.client.exists(actualPrefix)) {
@@ -70,7 +71,7 @@ export default class SftpPublisherPlugin implements PublisherPlugin<PluginConfig
     progress.stop()
   }
 
-  async publish(key: string) {
+  async publish(key: string): Promise<PublishResult> {
     if (!this.option.noEmit) {
       const progress = this.logger.getProgressBar()
       progress.start(1, 0)

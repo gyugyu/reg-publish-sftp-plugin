@@ -18,7 +18,7 @@ export interface SetupInquireResult {
 
 export default class SftpPreparer implements PluginPreparer<SetupInquireResult, PluginConfig> {
 
-  private hasCredential() {
+  private hasCredential(): boolean {
     return !!process.env.SFTP_PASSWORD || !!fetchPrivateKey()
   }
 
@@ -60,7 +60,7 @@ export default class SftpPreparer implements PluginPreparer<SetupInquireResult, 
     ]
   }
 
-  async prepare(config: PluginCreateOptions<SetupInquireResult>) {
+  async prepare(config: PluginCreateOptions<SetupInquireResult>): Promise<PluginConfig> {
     const { logger } = config
     const {
       host,

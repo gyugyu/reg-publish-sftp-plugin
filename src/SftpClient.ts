@@ -12,34 +12,36 @@ export default class SftpClient {
     this.connected = false
   }
 
-  private async init() {
+  private async init(): Promise<void> {
     if (!this.connected) {
       await this.sftp.connect(this.config)
       this.connected = true
     }
   }
 
-  async exists(remoteFilePath: string) {
+  async exists(remoteFilePath: string): Promise<boolean> {
     await this.init()
-    return await this.sftp.exists(remoteFilePath)
+    return !!(await this.sftp.exists(remoteFilePath))
   }
 
-  async downloadDirectory(srcDir: string, dstDir: string) {
+  async downloadDirectory(srcDir: string, dstDir: string): Promise<void> {
     await this.init()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (this.sftp as any).downloadDir(srcDir, dstDir)
   }
 
-  async createDirectory(remoteFilePath: string) {
+  async createDirectory(remoteFilePath: string): Promise<void> {
     await this.init()
     await this.sftp.mkdir(remoteFilePath, true)
   }
 
-  async uploadDirectory(srcDir: string, dstDir: string) {
+  async uploadDirectory(srcDir: string, dstDir: string): Promise<void> {
     await this.init()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (this.sftp as any).uploadDir(srcDir, dstDir)
   }
 
-  async end() {
+  async end(): Promise<void> {
     if (this.connected) {
       await this.sftp.end()
       this.sftp = new Client()
