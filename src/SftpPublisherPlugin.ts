@@ -57,6 +57,7 @@ export default class SftpPublisherPlugin implements PublisherPlugin<PluginConfig
     if (this.option.noEmit) return
     const actualPrefix = `${this.resolveOnRemote(key)}/${path.basename(this.workingDirs.actualDir)}`
     if (!await this.client.exists(actualPrefix)) {
+      await this.client.end()
       return
     }
 
@@ -64,6 +65,7 @@ export default class SftpPublisherPlugin implements PublisherPlugin<PluginConfig
     progress.start(1, 0)
     mkdirp.sync(this.workingDirs.expectedDir)
     await this.client.downloadDirectory(actualPrefix, this.workingDirs.expectedDir)
+    await this.client.end()
     progress.increment(1)
     progress.stop()
   }
