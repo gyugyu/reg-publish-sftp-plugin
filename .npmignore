@@ -1,0 +1,7 @@
+docker-compose.yml
+jest.config.js
+tsconfig.json
+tsconfig.build.json
+.github/
+docker/
+src/
