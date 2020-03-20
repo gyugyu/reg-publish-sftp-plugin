@@ -1,3 +1,5 @@
+.eslintignore
+.eslintrc.js
 docker-compose.yml
 jest.config.js
 tsconfig.json
