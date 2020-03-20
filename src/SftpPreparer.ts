@@ -101,6 +101,7 @@ export default class SftpPreparer implements PluginPreparer<SetupInquireResult, 
       })
       try {
         await client.exists('.')
+        await client.end()
       } catch (e) {
         logger.warn(`Test accessing to SFTP server failed. Reason: ${e}`)
       }
