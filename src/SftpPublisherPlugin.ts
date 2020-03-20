@@ -71,14 +71,16 @@ export default class SftpPublisherPlugin implements PublisherPlugin<PluginConfig
   }
 
   async publish(key: string) {
-    const progress = this.logger.getProgressBar()
-    progress.start(1, 0)
+    if (!this.option.noEmit) {
+      const progress = this.logger.getProgressBar()
+      progress.start(1, 0)
 
-    await this.client.createDirectory(this.resolveOnRemote(key))
-    await this.client.uploadDirectory(this.workingDirs.base, this.resolveOnRemote(key))
-    await this.client.end()
-    progress.increment(1)
-    progress.stop()
+      await this.client.createDirectory(this.resolveOnRemote(key))
+      await this.client.uploadDirectory(this.workingDirs.base, this.resolveOnRemote(key))
+      await this.client.end()
+      progress.increment(1)
+      progress.stop()
+    }
 
     const list = await new Promise<string[]>((resolve, reject) => {
       glob('**/*.html', {
